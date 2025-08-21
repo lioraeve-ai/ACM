@@ -15,11 +15,10 @@ export function LoginForm() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
+    const email = (event.currentTarget.elements.namedItem('email') as HTMLInputElement).value;
 
     // Mock authentication
     setTimeout(() => {
-      const email = (event.currentTarget.elements.namedItem('email') as HTMLInputElement).value;
-
       if (email === 'admin@dubai.bits-pilani.ac.in') {
         // Mock admin login
         localStorage.setItem('user', JSON.stringify({ email, isAdmin: true }));
