@@ -35,7 +35,7 @@ const noviceConditions: Rule[] = [
   },
   { description: "Must include at least 1 hexadecimal character (A-F) in uppercase", test: (input) => /[A-F]/.test(input) },
   { description: "Cannot contain common earthly words", test: (input) => !commonWords.some(word => input.toLowerCase().includes(word)) },
-  { description: "Must include at least 1 prime number (2,3,5,7,11,13,17,19)", test: (input) => /(2|3|5|7|11|13|17|19)/.test(input) },
+  { description: "Must include at least 1 prime number (2, 3, 5, 7, 11, 13, 17, 19)", test: (input) => /(2|3|5|7|11|13|17|19)/.test(input) },
   { description: "Must contain '25' representing mystical year 2025", test: (input) => input.includes('25') },
   { description: "Must include at least 1 letter from each: 'GHOST','WITCH','DEMON'", test: (input) => {
       return ['GHOST', 'WITCH', 'DEMON'].every(word => 
@@ -68,7 +68,7 @@ const cyberWarlockConditions: Rule[] = [
         );
     }},
     { description: "Cannot use sequential keyboard patterns (qwe,asd,zxc,123,abc)", test: (input) => !sequentialPatterns.some(p => input.toLowerCase().includes(p)) },
-    { description: "Must include exactly 3 hexadecimal digits (A-F)", test: (input) => (input.match(/[A-Fa-f]/g) || []).length === 3 },
+    { description: "Must include exactly 6 hexadecimal digits (A-F)", test: (input) => (input.match(/[A-Fa-f]/g) || []).length === 6 },
     { description: "Must contain programming language abbreviation (JS,PY,CPP,SQL,GO,RUST)", test: (input) => /(JS|PY|CPP|SQL|GO|RUST)/.test(input) },
     { description: "Must include Boolean operator (AND,OR,NOT,XOR) in all caps", test: (input) => /(AND|OR|NOT|XOR)/.test(input) },
     { description: "Must contain current hour in 24-hour format", test: (input) => input.includes(new Date().getHours().toString().padStart(2, '0')) },
@@ -89,7 +89,7 @@ const cyberWarlockConditions: Rule[] = [
     }},
     { description: "Must contain letters from hash spell types (MD5,SHA,AES,RSA,DES)", test: (input) => /(MD5|SHA|AES|RSA|DES)/.test(input.toUpperCase()) },
     { description: "Cannot contain common usernames", test: (input) => !commonUsernames.some(u => input.toLowerCase().includes(u)) },
-    { description: "Must include at least 1 power of 2 number (4,8,16,32,64,128,256)", test: (input) => /\b(4|8|16|32|64|128|256)\b/.test(input) },
+    { description: "Must include at least 1 power of 2 number (4,8,16,32,64,128,256)", test: (input) => /(4|8|16|32|64|128|256)/.test(input) },
     { description: "Must contain at least 2 Roman numerals (I,V,X,L,C,D,M)", test: (input) => (input.match(/[IVXLCDM]/g) || []).length >= 2 },
     { description: "Must include at least 1 bitwise operator symbol (&,|,^,~)", test: (input) => /[&|^~]/.test(input) },
     { description: "Password must be validated within 30-minute window", test: () => true }, // Server-side
