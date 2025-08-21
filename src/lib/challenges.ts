@@ -68,7 +68,7 @@ const cyberWarlockConditions: Rule[] = [
         );
     }},
     { description: "Cannot use sequential keyboard patterns (qwe,asd,zxc,123,abc)", test: (input) => !sequentialPatterns.some(p => input.toLowerCase().includes(p)) },
-    { description: "Must include exactly 6 hexadecimal digits (A-F)", test: (input) => (input.match(/[A-Fa-f]/g) || []).length === 6 },
+    { description: "Must include exactly 6 hexadecimal digits (A-F, a-f)", test: (input) => (input.match(/[A-Fa-f]/g) || []).length === 6 },
     { description: "Must contain programming language abbreviation (JS,PY,CPP,SQL,GO,RUST)", test: (input) => /(JS|PY|CPP|SQL|GO|RUST)/.test(input) },
     { description: "Must include Boolean operator (AND,OR,NOT,XOR) in all caps", test: (input) => /(AND|OR|NOT|XOR)/.test(input) },
     { description: "Must contain current hour in 24-hour format", test: (input) => input.includes(new Date().getHours().toString().padStart(2, '0')) },
@@ -98,17 +98,7 @@ const cyberWarlockConditions: Rule[] = [
 const masterSorcererConditions: Rule[] = [
     { description: "Password must be exactly 18 characters long", test: (input) => input.length === 18 },
     { description: "Must begin with 'ACM', end with '2025', contain 'DUBAI'", test: (input) => input.startsWith('ACM') && input.endsWith('2025') && input.includes('DUBAI') },
-    { description: "Must contain current ACM BPDC president's initials (live scraped)", test: async (input) => {
-        try {
-            const result = await getInitialsAction({ url: 'https://acm.dubai.bits-pilani.ac.in' });
-            if (result && result.initials) {
-                return input.includes(result.initials);
-            }
-            return false;
-        } catch {
-            return false;
-        }
-    }},
+    { description: "the technical executives name that is prompting his life at this point", test: (input) => input.includes('PRADYUN') },
     { description: "Must include current moon phase emoji (🌑🌒🌓🌔🌕🌖🌗🌘)", test: (input) => {
         const phases = ['🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘'];
         const day = new Date().getDate();
@@ -150,12 +140,17 @@ const masterSorcererConditions: Rule[] = [
     }},
     { description: "Must include at least 3 different Roman numerals", test: (input) => new Set(input.match(/[IVXLCDM]/g) || []).size >= 3 },
     { description: "Must contain valid IPv4 address octet (0-255)", test: (input) => {
-        const octets = input.match(/\b([0-9]{1,3})\b/g) || [];
-        return octets.some(o => parseInt(o) >= 0 && parseInt(o) <= 255);
+        const octets = input.match(/\b([0-9]{1,3})\b/g);
+        if (!octets) return false;
+        return octets.some(o => {
+            const num = parseInt(o, 10);
+            return !isNaN(num) && num >= 0 && num <= 255;
+        });
     }},
     { description: "Cannot contain palindromic sequences of 3+ characters", test: (input) => {
         for (let i = 0; i < input.length - 2; i++) {
             const sub = input.substring(i, i + 3);
+            if (sub.length < 3) continue;
             if (sub === sub.split('').reverse().join('')) return false;
         }
         return true;
