@@ -4,6 +4,7 @@
 import { useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { PlanchetteIcon } from "@/components/icons/PlanchetteIcon";
+import { ChevronsUp, ChevronsDown } from "lucide-react";
 
 interface PlanchetteKeyboardProps {
   onKeyPress: (key: string) => void;
@@ -21,8 +22,9 @@ export default function PlanchetteKeyboard({ onKeyPress }: PlanchetteKeyboardPro
   const [planchettePos, setPlanchettePos] = useState({ top: 0, left: 0, opacity: 0 });
   const keyRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({});
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isUppercase, setIsUppercase] = useState(true);
 
-  const allKeys = [...numKeys, ...keysQWERTY, ...symbolKeys, " ", "DEL"];
+  const allKeys = [...numKeys, ...keysQWERTY, ...keysQWERTY.map(k => k.toLowerCase()), ...symbolKeys, " ", "DEL", "SHIFT"];
 
   const movePlanchette = (key: string) => {
     const keyElement = keyRefs.current[key];
@@ -38,8 +40,17 @@ export default function PlanchetteKeyboard({ onKeyPress }: PlanchetteKeyboardPro
   };
 
   const handleKeyPress = (key: string) => {
-    onKeyPress(key);
-    movePlanchette(key);
+    if (key === "SHIFT") {
+        setIsUppercase(prev => !prev);
+        // Haptic Necromancy: Strong vibration for mode change
+        if (navigator.vibrate) {
+            navigator.vibrate(100);
+        }
+        return;
+    }
+    const finalKey = isUppercase ? key.toUpperCase() : key.toLowerCase();
+    onKeyPress(finalKey);
+    movePlanchette(key.toUpperCase()); // Always move to the base key position
     // Haptic Necromancy: Soft whisper for letter selection
     if (navigator.vibrate) {
       navigator.vibrate(50);
@@ -54,7 +65,7 @@ export default function PlanchetteKeyboard({ onKeyPress }: PlanchetteKeyboardPro
 
   const KeyButton = ({ value, className = "" }: { value: string, className?: string }) => (
     <button
-      ref={(el) => (keyRefs.current[value] = el)}
+      ref={(el) => (keyRefs.current[value.toUpperCase()] = el)}
       onClick={() => handleKeyPress(value)}
       className={cn(
         "font-creepster text-2xl h-12 w-full rounded-md flex items-center justify-center",
@@ -64,7 +75,7 @@ export default function PlanchetteKeyboard({ onKeyPress }: PlanchetteKeyboardPro
         className
       )}
     >
-      {value}
+      {isUppercase ? value.toUpperCase() : value.toLowerCase()}
     </button>
   );
 
@@ -76,7 +87,21 @@ export default function PlanchetteKeyboard({ onKeyPress }: PlanchetteKeyboardPro
       />
       <div className="space-y-2">
         <div className="grid grid-cols-10 gap-1 md:gap-2">
-          {numKeys.map((key) => <KeyButton key={key} value={key} />)}
+          {numKeys.map((key) =>  (
+            <button
+                key={key}
+                ref={(el) => (keyRefs.current[key] = el)}
+                onClick={() => onKeyPress(key)}
+                className={cn(
+                    "font-creepster text-2xl h-12 w-full rounded-md flex items-center justify-center",
+                    "bg-primary/20 hover:bg-primary/40 text-spectral-gray border border-primary/50",
+                    "transition-all duration-200 active:scale-90 active:bg-accent active:text-accent-foreground",
+                    "focus:outline-none focus:ring-2 focus:ring-ring"
+                )}
+                >
+                {key}
+            </button>
+          ))}
         </div>
         <div className="grid grid-cols-10 gap-1 md:gap-2">
           {keysQWERTY.slice(0, 10).map((key) => <KeyButton key={key} value={key} />)}
@@ -92,22 +117,75 @@ export default function PlanchetteKeyboard({ onKeyPress }: PlanchetteKeyboardPro
             <div className="col-span-2 hidden sm:block"/>
         </div>
          <div className="grid grid-cols-10 gap-1 md:gap-2">
-          {symbolKeys.slice(0, 10).map((key) => <KeyButton key={key} value={key} />)}
+          {symbolKeys.slice(0, 10).map((key) => (
+             <button
+                key={key}
+                ref={(el) => (keyRefs.current[key] = el)}
+                onClick={() => onKeyPress(key)}
+                className={cn(
+                    "font-creepster text-2xl h-12 w-full rounded-md flex items-center justify-center",
+                    "bg-primary/20 hover:bg-primary/40 text-spectral-gray border border-primary/50",
+                    "transition-all duration-200 active:scale-90 active:bg-accent active:text-accent-foreground",
+                    "focus:outline-none focus:ring-2 focus:ring-ring"
+                )}
+                >
+                {key}
+            </button>
+          ))}
         </div>
         <div className="grid grid-cols-10 gap-1 md:gap-2">
-          {symbolKeys.slice(10, 20).map((key) => <KeyButton key={key} value={key} />)}
+          {symbolKeys.slice(10, 20).map((key) => (
+             <button
+                key={key}
+                ref={(el) => (keyRefs.current[key] = el)}
+                onClick={() => onKeyPress(key)}
+                className={cn(
+                    "font-creepster text-2xl h-12 w-full rounded-md flex items-center justify-center",
+                    "bg-primary/20 hover:bg-primary/40 text-spectral-gray border border-primary/50",
+                    "transition-all duration-200 active:scale-90 active:bg-accent active:text-accent-foreground",
+                    "focus:outline-none focus:ring-2 focus:ring-ring"
+                )}
+                >
+                {key}
+            </button>
+          ))}
         </div>
          <div className="grid grid-cols-10 gap-1 md:gap-2 sm:px-10">
             <div className="col-span-2 hidden sm:block"/>
-            {symbolKeys.slice(20).map((key) => <KeyButton key={key} value={key} />)}
+            {symbolKeys.slice(20).map((key) => (
+                <button
+                    key={key}
+                    ref={(el) => (keyRefs.current[key] = el)}
+                    onClick={() => onKeyPress(key)}
+                    className={cn(
+                        "font-creepster text-2xl h-12 w-full rounded-md flex items-center justify-center",
+                        "bg-primary/20 hover:bg-primary/40 text-spectral-gray border border-primary/50",
+                        "transition-all duration-200 active:scale-90 active:bg-accent active:text-accent-foreground",
+                        "focus:outline-none focus:ring-2 focus:ring-ring"
+                    )}
+                    >
+                    {key}
+                </button>
+            ))}
             <div className="col-span-2 hidden sm:block"/>
         </div>
 
-        <div className="grid grid-cols-2 gap-2 pt-2">
-            <button ref={(el) => (keyRefs.current[" "] = el)} onClick={() => handleKeyPress(" ")} className="font-roboto-mono text-lg h-14 rounded-md bg-primary/20 hover:bg-primary/40 text-spectral-gray border border-primary/50">
+        <div className="grid grid-cols-3 gap-2 pt-2">
+            <button
+              ref={(el) => (keyRefs.current["SHIFT"] = el)}
+              onClick={() => handleKeyPress("SHIFT")}
+              className={cn(
+                "font-roboto-mono text-lg h-14 rounded-md flex items-center justify-center gap-2 border",
+                isUppercase ? "bg-accent/80 text-accent-foreground border-accent" : "bg-primary/20 hover:bg-primary/40 text-spectral-gray border-primary/50"
+              )}
+            >
+              {isUppercase ? <ChevronsUp size={20} /> : <ChevronsDown size={20} />}
+              SHIFT
+            </button>
+            <button ref={(el) => (keyRefs.current[" "] = el)} onClick={() => onKeyPress(" ")} className="font-roboto-mono text-lg h-14 rounded-md bg-primary/20 hover:bg-primary/40 text-spectral-gray border border-primary/50">
               SPACE
             </button>
-            <button ref={(el) => (keyRefs.current["DEL"] = el)} onClick={() => handleKeyPress("DEL")} className="font-roboto-mono text-lg h-14 rounded-md bg-destructive/50 hover:bg-destructive/80 text-spectral-gray border border-destructive/50">
+            <button ref={(el) => (keyRefs.current["DEL"] = el)} onClick={() => onKeyPress("DEL")} className="font-roboto-mono text-lg h-14 rounded-md bg-destructive/50 hover:bg-destructive/80 text-spectral-gray border border-destructive/50">
               DELETE
             </button>
         </div>
@@ -115,5 +193,3 @@ export default function PlanchetteKeyboard({ onKeyPress }: PlanchetteKeyboardPro
     </div>
   );
 }
-
-    
