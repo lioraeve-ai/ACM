@@ -96,7 +96,7 @@ const cyberWarlockConditions: Rule[] = [
 ];
 
 const masterSorcererConditions: Rule[] = [
-    { description: "Password must be exactly 18 characters long", test: (input) => input.length === 18 },
+    { description: "Password must be at least 18 characters long", test: (input) => input.length >= 18 },
     { description: "Must begin with 'ACM', end with '2025', contain 'DUBAI'", test: (input) => input.startsWith('ACM') && input.endsWith('2025') && input.includes('DUBAI') },
     { description: "the technical executives name that is prompting his life at this point", test: (input) => input.includes('PRADYUN') },
     { description: "Must include current moon phase emoji (🌑🌒🌓🌔🌕🌖🌗🌘)", test: (input) => {
@@ -143,6 +143,7 @@ const masterSorcererConditions: Rule[] = [
         const octets = input.match(/\b([0-9]{1,3})\b/g);
         if (!octets) return false;
         return octets.some(o => {
+            if (o.length > 1 && o.startsWith('0')) return false; // No leading zeros unless it's just "0"
             const num = parseInt(o, 10);
             return !isNaN(num) && num >= 0 && num <= 255;
         });
