@@ -1,54 +1,45 @@
+
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
+import { CheckCircle2, XCircle } from "lucide-react";
 
-interface ChallengeDisplayProps {
-  challenge: {
-    tier: number;
-    title: string;
-    description: string;
-    phrase: string;
-  };
-  currentInput: string;
+interface Rule {
+  description: string;
+  isSatisfied: boolean;
 }
 
-export default function ChallengeDisplay({ challenge, currentInput }: ChallengeDisplayProps) {
-  const isCorrect = challenge.phrase.startsWith(currentInput) && currentInput.length > 0;
-  const isComplete = currentInput === challenge.phrase;
+interface ChallengeDisplayProps {
+  rules: Rule[];
+  currentInput: string;
+  allSatisfied: boolean;
+}
 
-  let displayColor = "text-foreground";
-  if (isComplete) {
-    displayColor = "text-achievement-green";
-  } else if (!isCorrect) {
-    displayColor = "text-destructive";
-  }
-
+export default function ChallengeDisplay({ rules, currentInput, allSatisfied }: ChallengeDisplayProps) {
   return (
     <Card className="bg-card/50 border-border">
       <CardHeader>
-        <div className="flex justify-between items-center">
-          <CardTitle className="font-headline text-2xl text-accent">
-            Tier {challenge.tier}: {challenge.title}
-          </CardTitle>
-          <div className="font-roboto-mono text-sm text-muted-foreground">
-            {currentInput.length} / {challenge.phrase.length}
-          </div>
-        </div>
-        <CardDescription className="font-body">{challenge.description}</CardDescription>
+        <CardTitle className="font-headline text-2xl text-accent">
+          The Cryptic Incantation
+        </CardTitle>
+        <CardDescription className="font-body">
+          Your input must satisfy all of the ancient rules below.
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="bg-primary/20 p-4 rounded-md border border-primary/50">
-          <p className="font-code text-2xl text-muted-foreground tracking-widest min-h-[3rem]">
-            {challenge.phrase.split('').map((char, index) => (
-              <span key={index} className={index < currentInput.length ? 'text-accent' : ''}>
-                {char}
-              </span>
-            ))}
-          </p>
-          <p className={`font-code text-2xl tracking-widest min-h-[3rem] mt-2 ${displayColor}`}>
+        <div className="bg-primary/20 p-4 rounded-md border border-primary/50 mb-6">
+          <p className={`font-code text-2xl tracking-widest min-h-[3rem] break-all ${allSatisfied ? 'text-achievement-green' : 'text-foreground'}`}>
             {currentInput}
-            <span className="animate-ping">_</span>
+            <span className={allSatisfied ? "hidden" : "animate-ping"}>_</span>
           </p>
+        </div>
+        <div className="space-y-3">
+          {rules.map((rule, index) => (
+            <div key={index} className={`flex items-center gap-3 transition-colors duration-500 ${rule.isSatisfied ? 'text-achievement-green' : 'text-muted-foreground'}`}>
+              {rule.isSatisfied ? <CheckCircle2 className="w-5 h-5" /> : <XCircle className="w-5 h-5" />}
+              <span className={`font-body ${rule.isSatisfied ? 'font-semibold' : ''}`}>{rule.description}</span>
+            </div>
+          ))}
         </div>
       </CardContent>
     </Card>
