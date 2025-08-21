@@ -130,16 +130,6 @@ const masterSorcererConditions: Rule[] = [
         return input.includes(season);
     }},
     { description: "Must include at least 3 different Roman numerals", test: (input) => new Set(input.match(/[IVXLCDM]/g) || []).size >= 3 },
-    { description: "Must contain valid IPv4 address octet (0-255)", test: (input) => {
-        const octets = input.match(/\b([0-9]{1,3})\b/g);
-        if (!octets) return false;
-        return octets.some(o => {
-            if (o.length > 1 && o.startsWith('0')) return false; // No leading zeros unless it's just "0"
-            const num = parseInt(o, 10);
-            return !isNaN(num) && num >= 0 && num <= 255;
-        });
-    }},
-    { description: "Ask the council for the key by begging them", test: (input) => input.includes('exec managers quarrel') },
     { description: "Must include current academic year combination (2526)", test: (input) => input.includes('2526') },
     { description: "Include the year that you graduate", test: (input) => ['2026', '2027', '2028', '2029'].some(year => input.includes(year)) },
     { description: "Add the years when ACM received the ACM Student Chapter Excellence Award", test: (input) => input.includes('2020') && input.includes('2024') },
