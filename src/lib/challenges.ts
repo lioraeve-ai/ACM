@@ -20,7 +20,7 @@ const sequentialPatterns = ['qwe', 'asd', 'zxc', '123', 'abc'];
 const commonUsernames = ['admin', 'user', 'test', 'demo'];
 
 const noviceConditions: Rule[] = [
-  { description: "Password must be exactly 10 characters long", test: (input) => input.length === 10 },
+  { description: "Password must be at least 10 characters long", test: (input) => input.length >= 10 },
   { description: "Must begin with sacred letters 'ACM'", test: (input) => input.startsWith('ACM') },
   { description: "Must contain at least 3 digits from binary realm (0,1,2,4,8)", test: (input) => (input.match(/[01248]/g) || []).length >= 3 },
   { description: "Must include exactly 2 techno-magical symbols (!@#$%^&*)", test: (input) => (input.match(/[!@#$%^&*]/g) || []).length === 2 },
@@ -35,7 +35,7 @@ const noviceConditions: Rule[] = [
   },
   { description: "Must include at least 1 hexadecimal character (A-F) in uppercase", test: (input) => /[A-F]/.test(input) },
   { description: "Cannot contain common earthly words", test: (input) => !commonWords.some(word => input.toLowerCase().includes(word)) },
-  { description: "Must include at least 1 prime number (2,3,5,7,11,13,17,19)", test: (input) => /\b(2|3|5|7|11|13|17|19)\b/.test(input) },
+  { description: "Must include at least 1 prime number (2,3,5,7,11,13,17,19)", test: (input) => /(2|3|5|7|11|13|17|19)/.test(input) },
   { description: "Must contain '25' representing mystical year 2025", test: (input) => input.includes('25') },
   { description: "Must include at least 1 letter from each: 'GHOST','WITCH','DEMON'", test: (input) => {
       return ['GHOST', 'WITCH', 'DEMON'].every(word => 
@@ -224,4 +224,3 @@ export async function validatePassword(password: string, rules: Rule[]): Promise
     return results;
 }
 
-    
