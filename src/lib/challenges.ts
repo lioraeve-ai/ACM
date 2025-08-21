@@ -141,7 +141,7 @@ const masterSorcererConditions: Rule[] = [
     }},
     { description: "Ask the council for the key by begging them", test: (input) => input.includes('exec managers quarrel') },
     { description: "Must include current academic year combination (2526)", test: (input) => input.includes('2526') },
-    { description: "Who is the InCharge of ACM club", test: (input) => input.includes('Dr. Sujala D. Shetty') },
+    { description: "Include the year that you graduate", test: (input) => ['2026', '2027', '2028', '2029'].some(year => input.includes(year)) },
     { description: "Add the years when ACM received the ACM Student Chapter Excellence Award", test: (input) => input.includes('2020') && input.includes('2024') },
     { description: "Write the name of the best Footballer", test: (input) => input.includes('Cristiano Ronaldo') },
     { description: "Which song was used in the ad where the main protagonist said nothing beats a JET2 holiday and right now you can save 50 pounds per-person", test: (input) => input.includes('Hold My Hand') },
@@ -193,3 +193,5 @@ export async function validatePassword(password: string, rules: Rule[]): Promise
     );
     return results;
 }
+
+    
