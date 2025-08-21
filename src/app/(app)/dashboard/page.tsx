@@ -5,7 +5,7 @@ import ChallengeDisplay from "@/components/game/ChallengeDisplay";
 import InitialsScraper from "@/components/game/InitialsScraper";
 import PlanchetteKeyboard from "@/components/game/PlanchetteKeyboard";
 import Scoreboard from "@/components/game/Scoreboard";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 const rules = [
@@ -42,6 +42,16 @@ export default function DashboardPage() {
     return validatedRules.every(rule => rule.isSatisfied);
   }, [validatedRules]);
 
+  useEffect(() => {
+    if (allRulesSatisfied) {
+      toast({
+         title: "The Coven is Pleased!",
+         description: "You have mastered the cryptic incantation!",
+         className: 'bg-achievement-green border-none text-white'
+     });
+   }
+  }, [allRulesSatisfied, toast]);
+
 
   const handleKeyPress = (key: string) => {
     if (allRulesSatisfied) return;
@@ -51,14 +61,6 @@ export default function DashboardPage() {
       setCurrentInput((prev) => prev + key);
     }
   };
-
-  if (allRulesSatisfied) {
-     toast({
-        title: "The Coven is Pleased!",
-        description: "You have mastered the cryptic incantation!",
-        className: 'bg-achievement-green border-none text-white'
-    });
-  }
 
   return (
     <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
