@@ -10,6 +10,8 @@ import { useToast } from "@/hooks/use-toast";
 import { challenges, validatePassword, Challenge } from "@/lib/challenges";
 import { OuroborosIcon } from "@/components/icons/OuroborosIcon";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { PentagramIcon } from "@/components/icons/PentagramIcon";
 
 export default function DashboardPage() {
   const [currentInput, setCurrentInput] = useState("");
@@ -27,17 +29,20 @@ export default function DashboardPage() {
   const [attempts, setAttempts] = useState(0);
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
+  
+  const [gameState, setGameState] = useState<'idle' | 'running' | 'finished'>('idle');
+
 
   const currentChallenge: Challenge | undefined = challenges[currentChallengeIndex];
 
   const updateValidatedRules = useCallback(async () => {
-    if (!currentChallenge) return;
+    if (!currentChallenge || gameState !== 'running') return;
 
     setIsChecking(true);
     const results = await validatePassword(currentInput, currentChallenge.rules);
     setValidatedRules(results);
     setIsChecking(false);
-  }, [currentInput, currentChallenge]);
+  }, [currentInput, currentChallenge, gameState]);
 
   useEffect(() => {
     updateValidatedRules();
@@ -48,25 +53,31 @@ export default function DashboardPage() {
       setIsLoading(false);
       setCurrentInput("");
       setAttempts(0);
-      setStartTime(Date.now());
+      setStartTime(null);
       setEndTime(null);
       setTimeElapsed(0);
+      setGameState('idle');
     }
   }, [currentChallengeIndex, currentChallenge]);
   
   useEffect(() => {
-    if (startTime && !endTime) {
-      const timer = setInterval(() => {
+    let timer: NodeJS.Timeout;
+    if (gameState === 'running' && startTime && !endTime) {
+      timer = setInterval(() => {
         setTimeElapsed((Date.now() - startTime) / 1000);
       }, 100);
-      return () => clearInterval(timer);
     }
-  }, [startTime, endTime]);
+    return () => clearInterval(timer);
+  }, [gameState, startTime, endTime]);
 
 
   const allRulesSatisfied = useMemo(() => {
     if (validatedRules.length === 0 || !currentChallenge) return false;
-    return validatedRules.length === currentChallenge.rules.length && validatedRules.every(rule => rule.isSatisfied);
+    const allSatisfied = validatedRules.length === currentChallenge.rules.length && validatedRules.every(rule => rule.isSatisfied);
+    if (allSatisfied) {
+      setGameState('finished');
+    }
+    return allSatisfied;
   }, [validatedRules, currentChallenge]);
 
   const calculateScore = useCallback(() => {
@@ -120,14 +131,16 @@ export default function DashboardPage() {
     } else {
       setCurrentInput((prev) => prev + key);
     }
-    if (startTime === null) {
-      setStartTime(Date.now());
-    }
     // Increment attempts on each keypress after the first
     if(currentInput.length > 0) {
         setAttempts(prev => prev + 1);
     }
   };
+  
+  const handleStartChallenge = () => {
+    setGameState('running');
+    setStartTime(Date.now());
+  }
 
   const handleNextChallenge = () => {
     if (currentChallengeIndex < challenges.length - 1) {
@@ -150,6 +163,31 @@ export default function DashboardPage() {
         <p className="ml-4 font-body text-lg">Summoning the next challenge...</p>
       </div>
     );
+  }
+  
+  if (gameState === 'idle') {
+    return (
+        <div className="flex items-center justify-center min-h-[80vh]">
+            <Card className="w-full max-w-2xl bg-card/80 backdrop-blur-sm border-accent/20 text-center">
+                <CardHeader>
+                    <div className="flex justify-center items-center gap-4 mb-4">
+                        <PentagramIcon className="w-12 h-12 text-secondary"/>
+                        <CardTitle className="font-creepster text-5xl text-accent">{currentChallenge.title}</CardTitle>
+                        <PentagramIcon className="w-12 h-12 text-secondary"/>
+                    </div>
+                    <CardDescription className="font-body text-xl text-spectral-gray">
+                        {currentChallenge.description}
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <p className="text-muted-foreground mb-6">You have 300 seconds to complete this trial. The spirits are watching.</p>
+                    <Button onClick={handleStartChallenge} size="lg" className="font-headline text-lg">
+                        Begin Trial
+                    </Button>
+                </CardContent>
+            </Card>
+        </div>
+    )
   }
 
   return (
