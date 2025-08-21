@@ -97,7 +97,7 @@ const cyberWarlockConditions: Rule[] = [
 
 const masterSorcererConditions: Rule[] = [
     { description: "Password must be at least 18 characters long", test: (input) => input.length >= 18 },
-    { description: "Must begin with 'ACM', end with '2025', contain 'DUBAI'", test: (input) => input.startsWith('ACM') && input.endsWith('2025') && input.includes('DUBAI') },
+    { description: "Must begin with 'ACM', end with '2025', contain 'LONG live AAKAR'", test: (input) => input.startsWith('ACM') && input.endsWith('2025') && input.includes('LONG live AAKAR') },
     { description: "the technical executives name that is prompting his life at this point", test: (input) => input.includes('PRADYUN') },
     { description: "Must include current moon phase emoji (🌑🌒🌓🌔🌕🌖🌗🌘)", test: (input) => {
         const phases = ['🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘'];
@@ -105,18 +105,9 @@ const masterSorcererConditions: Rule[] = [
         const phase = phases[day % 8];
         return input.includes(phase);
     }},
-    { description: "Must contain exactly 3 different prime numbers between 17-97", test: (input) => {
-        const primes = ["17", "19", "23", "29", "31", "37", "41", "43", "47", "53", "59", "61", "67", "71", "73", "79", "83", "89", "97"];
-        const found = primes.filter(p => input.includes(p));
-        return new Set(found).size === 3;
-    }},
+    { description: "Must contain the phone number of the lead of LUG", test: (input) => input.includes('+971562058015') },
     { description: "Must include valid chess algebraic notation", test: (input) => /(?:[PNBRQK]?[a-h]?[1-8]?x?[a-h][1-8]|[O-O](?:-O)?)/.test(input) },
-    { description: "Must contain exactly 3 chars from EACH: UPPERCASE,lowercase,digits,symbols", test: (input) => {
-        return (input.match(/[A-Z]/g) || []).length === 3 &&
-               (input.match(/[a-z]/g) || []).length === 3 &&
-               (input.match(/\d/g) || []).length === 3 &&
-               (input.match(/[!@#$%^&*()_+\-=[\]{}|;:,.<>?]/g) || []).length === 3;
-    }},
+    { description: "Include the person who created AI", test: (input) => input.includes('Alan Turing') },
     { description: "Cannot contain sequential ASCII characters", test: (input) => {
         for (let i = 0; i < input.length - 2; i++) {
             const c1 = input.charCodeAt(i);
@@ -126,7 +117,7 @@ const masterSorcererConditions: Rule[] = [
         }
         return true;
     }},
-    { description: "Must include current UTC hour in 24-hour format", test: (input) => input.includes(new Date().getUTCHours().toString().padStart(2, '0')) },
+    { description: "What is the current value of AED in Dollars", test: (input) => input.includes('0.27') },
     { description: "Must contain legendary computer scientist surname", test: (input) => /(Turing|Dijkstra|Knuth|Ritchie|Torvalds|Hopper|Lovelace)/i.test(input) },
     { description: "Must include programming language codes", test: (input) => /(JS|PY|CPP|SQL|GO|RU|C|R|PHP|JAVA)/.test(input) },
     { description: "Cannot use keyboard geometric patterns", test: (input) => !/(qwerty|asdfgh|zxcvbn|147|258|369)/.test(input.toLowerCase()) },
@@ -148,35 +139,18 @@ const masterSorcererConditions: Rule[] = [
             return !isNaN(num) && num >= 0 && num <= 255;
         });
     }},
-    { description: "Cannot contain palindromic sequences of 3+ characters", test: (input) => {
-        for (let i = 0; i < input.length - 2; i++) {
-            const sub = input.substring(i, i + 3);
-            if (sub.length < 3) continue;
-            if (sub === sub.split('').reverse().join('')) return false;
-        }
-        return true;
-    }},
+    { description: "Ask the council for the key by begging them", test: (input) => input.includes('exec managers quarrel') },
     { description: "Must include current academic year combination (2526)", test: (input) => input.includes('2526') },
-    { description: "Must contain complete cryptographic algorithm name", test: (input) => /(MD5|SHA256|AES128|RSA2048)/.test(input) },
-    { description: "Must include at least 2 Boolean operators", test: (input) => (input.match(/(AND|OR|NOT|XOR|NAND|NOR)/g) || []).length >= 2 },
-    { description: "Must contain weekday (1-7) plus month number (01-12)", test: (input) => {
-        const day = (new Date().getDay() || 7).toString();
-        const month = (new Date().getMonth() + 1).toString().padStart(2, '0');
-        return input.includes(day) && input.includes(month);
-    }},
-    { description: "Cannot contain any repeating 3-character sequences", test: (input) => {
-        for (let i = 0; i < input.length - 5; i++) {
-            const sub = input.substring(i, i + 3);
-            if (input.substring(i + 3).includes(sub)) return false;
-        }
-        return true;
-    }},
-    { description: "Must spell out complete data structure name", test: (input) => /(ARRAY|LINKEDLIST|BINARYTREE|HASHMAP|STACK|QUEUE)/.test(input.toUpperCase()) },
+    { description: "Who is the InCharge of ACM club", test: (input) => input.includes('Dr. Sujala D. Shetty') },
+    { description: "Add the years when ACM received the ACM Student Chapter Excellence Award", test: (input) => input.includes('2020') && input.includes('2024') },
+    { description: "Write the name of the best Footballer", test: (input) => input.includes('Cristiano Ronaldo') },
+    { description: "Which song was used in the ad where the main protagonist said nothing beats a JET2 holiday and right now you can save 50 pounds per-person", test: (input) => input.includes('Hold My Hand') },
+    { description: "In which country was the distracted boyfriend meme shot in", test: (input) => input.toLowerCase().includes('spanish') },
     { description: "Must contain current business quarter (Q1,Q2,Q3,Q4)", test: (input) => {
         const q = `Q${Math.floor(new Date().getMonth() / 3) + 1}`;
         return input.includes(q);
     }},
-    { description: "Must include complete network protocol name", test: (input) => /(HTTP|HTTPS|TCP|UDP|DNS|SMTP|SSH|FTP)/.test(input.toUpperCase()) },
+    { description: "include the name of the previous ACM president", test: (input) => input.includes('Firas') },
     { description: "Password expires after exactly 180 seconds", test: () => true }, // Server-side
 ];
 
