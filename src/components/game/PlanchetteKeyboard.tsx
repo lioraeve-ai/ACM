@@ -47,9 +47,12 @@ export default function PlanchetteKeyboard({ onKeyPress }: PlanchetteKeyboardPro
         }
         return;
     }
-    
-    const finalKey = isUppercase && key.length === 1 && key.match(/[a-z]/i) ? key.toUpperCase() : key.toLowerCase();
-    onKeyPress(key); // Pass the original key
+
+    const characterToSend = key.length === 1 && key.match(/[a-zA-Z]/)
+      ? isUppercase ? key.toUpperCase() : key.toLowerCase()
+      : key;
+      
+    onKeyPress(characterToSend);
 
     movePlanchette(key);
     
