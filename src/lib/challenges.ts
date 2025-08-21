@@ -144,6 +144,7 @@ const masterSorcererConditions: Rule[] = [
     { description: "Password expires after exactly 180 seconds", test: () => true }, // Server-side
 ];
 
+
 export const challenges: Challenge[] = [
   {
     tier: 1,
@@ -158,7 +159,7 @@ export const challenges: Challenge[] = [
     title: "Advanced Cyber-Warlock's Nightmare",
     description: "The complexity of the incantations grows.",
     basePoints: 200,
-    multiplier: 1.5,
+    multiplier: 2.0,
     rules: cyberWarlockConditions,
   },
   {
@@ -166,7 +167,7 @@ export const challenges: Challenge[] = [
     title: "Master Techno-Sorcerer's Digital Damnation",
     description: "The ultimate challenge of digital sorcery.",
     basePoints: 300,
-    multiplier: 2.0,
+    multiplier: 3.0,
     rules: masterSorcererConditions,
   },
 ];
@@ -183,5 +184,3 @@ export async function validatePassword(password: string, rules: Rule[]): Promise
     );
     return results;
 }
-
-    

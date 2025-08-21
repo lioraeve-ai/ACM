@@ -22,6 +22,8 @@ export default function DashboardPage() {
 
   const [startTime, setStartTime] = useState<number | null>(null);
   const [endTime, setEndTime] = useState<number | null>(null);
+  const [timeElapsed, setTimeElapsed] = useState(0);
+
   const [attempts, setAttempts] = useState(0);
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
@@ -48,46 +50,68 @@ export default function DashboardPage() {
       setAttempts(0);
       setStartTime(Date.now());
       setEndTime(null);
+      setTimeElapsed(0);
     }
   }, [currentChallengeIndex, currentChallenge]);
+  
+  useEffect(() => {
+    if (startTime && !endTime) {
+      const timer = setInterval(() => {
+        setTimeElapsed((Date.now() - startTime) / 1000);
+      }, 100);
+      return () => clearInterval(timer);
+    }
+  }, [startTime, endTime]);
+
 
   const allRulesSatisfied = useMemo(() => {
-    if (validatedRules.length === 0) return false;
-    return validatedRules.every(rule => rule.isSatisfied);
-  }, [validatedRules]);
+    if (validatedRules.length === 0 || !currentChallenge) return false;
+    return validatedRules.length === currentChallenge.rules.length && validatedRules.every(rule => rule.isSatisfied);
+  }, [validatedRules, currentChallenge]);
 
-  const calculateScore = () => {
-    if (!startTime || !currentChallenge) return 0;
-    const end = endTime || Date.now();
-    const timeSeconds = (end - startTime) / 1000;
-    const maxTime = 300; // 5 minutes
-
-    const timeMultiplier = Math.max(0.1, (maxTime - timeSeconds) / maxTime);
-    const completionRatio = validatedRules.filter(r => r.isSatisfied).length / currentChallenge.rules.length;
-    const attemptPenalty = Math.max(0, (attempts - 1) * 10);
-    
-    const finalScore = Math.max(10, 
-      (currentChallenge.basePoints * timeMultiplier * completionRatio) - attemptPenalty
-    );
-    
-    return Math.floor(finalScore);
-  };
+  const calculateScore = useCallback(() => {
+    if (!startTime || !currentChallenge || !endTime) return 0;
+  
+    const timeSeconds = (endTime - startTime) / 1000;
+    const maxTime = 300;
+  
+    // The faster the user completes, the higher the multiplier.
+    // Finishes in 1s -> close to 1. Finishes in 300s -> close to 0.1
+    const timeBonus = Math.max(0.1, (maxTime - timeSeconds) / maxTime);
+  
+    // Streak bonus: 1x for no streak, 1.1x for 1, 1.2x for 2, etc. Capped at 1.5x
+    const streakBonus = Math.min(1.5, 1 + streak * 0.1);
+  
+    let calculatedScore =
+      currentChallenge.basePoints *
+      currentChallenge.multiplier *
+      timeBonus *
+      streakBonus;
+  
+    // Deduct points for multiple attempts
+    if (attempts > 0) {
+      calculatedScore *= Math.pow(0.9, attempts);
+    }
+  
+    return Math.floor(Math.max(10, calculatedScore));
+  }, [startTime, endTime, currentChallenge, attempts, streak]);
+  
 
   useEffect(() => {
     if (allRulesSatisfied) {
       if (!endTime) {
-          setEndTime(Date.now());
-          const newScore = calculateScore();
-          setScore(prev => prev + newScore);
-          setStreak(prev => prev + 1);
-          toast({
+        setEndTime(Date.now());
+        const newScore = calculateScore();
+        setScore(prev => prev + newScore);
+        setStreak(prev => prev + 1);
+        toast({
             title: "The Coven is Pleased!",
-            description: "You have mastered the cryptic incantation!",
+            description: `You have mastered the cryptic incantation! Score: +${newScore}`,
             className: 'bg-achievement-green border-none text-white'
-          });
+        });
       }
     }
-  }, [allRulesSatisfied, toast, endTime]);
+  }, [allRulesSatisfied, toast, endTime, calculateScore]);
 
   const handleKeyPress = (key: string) => {
     if (allRulesSatisfied) return;
@@ -99,15 +123,24 @@ export default function DashboardPage() {
     if (startTime === null) {
       setStartTime(Date.now());
     }
+    // Increment attempts on each keypress after the first
+    if(currentInput.length > 0) {
+        setAttempts(prev => prev + 1);
+    }
   };
 
   const handleNextChallenge = () => {
     if (currentChallengeIndex < challenges.length - 1) {
       setCurrentChallengeIndex(prev => prev + 1);
+    } else {
+       toast({
+        title: "Master Sorcerer!",
+        description: "You have completed all the challenges!",
+        className: 'bg-accent border-none text-black'
+      });
     }
   };
   
-  const timeElapsed = startTime && !endTime ? (Date.now() - startTime) / 1000 : 0;
   const difficultyMultiplier = currentChallenge?.multiplier || 1;
 
   if (isLoading || !currentChallenge) {
@@ -158,5 +191,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
-    
