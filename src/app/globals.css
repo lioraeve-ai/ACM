@@ -4,26 +4,30 @@
 
 @layer base {
   :root {
-    --background: 222 47% 11%; /* Deep Obsidian */
-    --foreground: 215 28% 90%; /* Spectral Gray */
-    --card: 222 47% 13%;
-    --card-foreground: 215 28% 90%;
-    --popover: 222 47% 13%;
-    --popover-foreground: 215 28% 90%;
-    --primary: 224 64% 32%; /* Deep Academic Blue */
-    --primary-foreground: 215 28% 90%;
-    --secondary: 273 67% 39%; /* Supernatural Violet */
-    --secondary-foreground: 215 28% 90%;
-    --muted: 224 64% 22%;
-    --muted-foreground: 215 20% 65%;
-    --accent: 45 65% 52%; /* Metallic Golden */
-    --accent-foreground: 222 47% 11%;
-    --destructive: 0 72% 51%; /* Failure Red */
-    --destructive-foreground: 0 0% 100%;
-    --border: 224 64% 22%;
-    --input: 224 64% 22%;
-    --ring: 45 65% 52%;
+    --background: 226 44% 9%; /* void-black */
+    --foreground: 220 13% 91%; /* ghost-silver */
+    --card: 226 44% 12%; 
+    --card-foreground: 220 13% 91%;
+    --popover: 226 44% 9%;
+    --popover-foreground: 220 13% 91%;
+    --primary: 226 66% 33%; /* primary-navy */
+    --primary-foreground: 220 13% 91%;
+    --secondary: 273 67% 39%; /* mystic-purple */
+    --secondary-foreground: 220 13% 91%;
+    --muted: 226 66% 23%;
+    --muted-foreground: 220 10% 65%;
+    --accent: 45 74% 52%; /* dubai-gold */
+    --accent-foreground: 226 44% 9%;
+    --destructive: 0 84% 60%; /* error-crimson */
+    --destructive-foreground: 220 13% 91%;
+    --border: 226 66% 23%;
+    --input: 226 66% 23%;
+    --ring: 45 74% 52%;
     --radius: 0.5rem;
+
+    /* Custom Colors */
+    --achievement-green: 158 90% 30%; /* success-green */
+    --challenge-orange: 30 90% 45%; /* warning-amber */
   }
 }
 
@@ -44,3 +48,5 @@
     background-size: 40px 40px;
   }
 }
+
+    

@@ -17,7 +17,6 @@ const keysQWERTY = [
 ];
 const symbolKeys = ["!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "_", "+", "=", "{", "}", "[", "]", "|", ";", ":", ",", ".", "<", ">", "/", "?", "~"];
 
-
 export default function PlanchetteKeyboard({ onKeyPress }: PlanchetteKeyboardProps) {
   const [planchettePos, setPlanchettePos] = useState({ top: 0, left: 0, opacity: 0 });
   const keyRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({});
@@ -49,7 +48,8 @@ export default function PlanchetteKeyboard({ onKeyPress }: PlanchetteKeyboardPro
 
   useEffect(() => {
     // Initial position
-    movePlanchette("A");
+    const timeout = setTimeout(() => movePlanchette("A"), 500);
+    return () => clearTimeout(timeout);
   }, []);
 
   const KeyButton = ({ value, className = "" }: { value: string, className?: string }) => (
@@ -57,7 +57,7 @@ export default function PlanchetteKeyboard({ onKeyPress }: PlanchetteKeyboardPro
       ref={(el) => (keyRefs.current[value] = el)}
       onClick={() => handleKeyPress(value)}
       className={cn(
-        "font-creepster text-2xl h-14 w-full rounded-md flex items-center justify-center",
+        "font-creepster text-2xl h-12 w-full rounded-md flex items-center justify-center",
         "bg-primary/20 hover:bg-primary/40 text-spectral-gray border border-primary/50",
         "transition-all duration-200 active:scale-90 active:bg-accent active:text-accent-foreground",
         "focus:outline-none focus:ring-2 focus:ring-ring",
@@ -69,45 +69,45 @@ export default function PlanchetteKeyboard({ onKeyPress }: PlanchetteKeyboardPro
   );
 
   return (
-    <div ref={containerRef} className="relative bg-card/50 p-4 rounded-lg border border-border shadow-lg">
+    <div ref={containerRef} className="relative bg-card/50 p-2 md:p-4 rounded-lg border border-border shadow-lg">
       <PlanchetteIcon
         className="absolute w-12 h-12 text-accent transform -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ease-in-out pointer-events-none z-10"
         style={planchettePos}
       />
       <div className="space-y-2">
-        <div className="grid grid-cols-10 gap-2">
+        <div className="grid grid-cols-10 gap-1 md:gap-2">
           {numKeys.map((key) => <KeyButton key={key} value={key} />)}
         </div>
-        <div className="grid grid-cols-10 gap-2">
+        <div className="grid grid-cols-10 gap-1 md:gap-2">
           {keysQWERTY.slice(0, 10).map((key) => <KeyButton key={key} value={key} />)}
         </div>
-        <div className="grid grid-cols-10 gap-2">
-            <div className="col-span-1"/>
+        <div className="grid grid-cols-10 gap-1 md:gap-2">
+            <div className="col-span-1 hidden sm:block"/>
             {keysQWERTY.slice(10, 19).map((key) => <KeyButton key={key} value={key} />)}
-            <div className="col-span-1"/>
+            <div className="col-span-1 hidden sm:block"/>
         </div>
-        <div className="grid grid-cols-10 gap-2">
-            <div className="col-span-2"/>
+         <div className="grid grid-cols-10 gap-1 md:gap-2 sm:px-10">
+            <div className="col-span-1 hidden sm:block"/>
             {keysQWERTY.slice(19).map((key) => <KeyButton key={key} value={key} />)}
-            <div className="col-span-2"/>
+            <div className="col-span-2 hidden sm:block"/>
         </div>
-         <div className="grid grid-cols-10 gap-2">
+         <div className="grid grid-cols-10 gap-1 md:gap-2">
           {symbolKeys.slice(0, 10).map((key) => <KeyButton key={key} value={key} />)}
         </div>
-        <div className="grid grid-cols-10 gap-2">
+        <div className="grid grid-cols-10 gap-1 md:gap-2">
           {symbolKeys.slice(10, 20).map((key) => <KeyButton key={key} value={key} />)}
         </div>
-         <div className="grid grid-cols-10 gap-2">
-            <div className="col-span-2"/>
+         <div className="grid grid-cols-10 gap-1 md:gap-2 sm:px-10">
+            <div className="col-span-2 hidden sm:block"/>
             {symbolKeys.slice(20).map((key) => <KeyButton key={key} value={key} />)}
-            <div className="col-span-2"/>
+            <div className="col-span-2 hidden sm:block"/>
         </div>
 
-        <div className="grid grid-cols-4 gap-2 pt-2">
-            <button ref={(el) => (keyRefs.current[" "] = el)} onClick={() => handleKeyPress(" ")} className="font-roboto-mono h-14 rounded-md bg-primary/20 hover:bg-primary/40 text-spectral-gray border border-primary/50 col-span-2">
+        <div className="grid grid-cols-2 gap-2 pt-2">
+            <button ref={(el) => (keyRefs.current[" "] = el)} onClick={() => handleKeyPress(" ")} className="font-roboto-mono text-lg h-14 rounded-md bg-primary/20 hover:bg-primary/40 text-spectral-gray border border-primary/50">
               SPACE
             </button>
-            <button ref={(el) => (keyRefs.current["DEL"] = el)} onClick={() => handleKeyPress("DEL")} className="font-roboto-mono h-14 rounded-md bg-destructive/50 hover:bg-destructive/80 text-spectral-gray border border-destructive/50 col-span-2">
+            <button ref={(el) => (keyRefs.current["DEL"] = el)} onClick={() => handleKeyPress("DEL")} className="font-roboto-mono text-lg h-14 rounded-md bg-destructive/50 hover:bg-destructive/80 text-spectral-gray border border-destructive/50">
               DELETE
             </button>
         </div>
@@ -115,3 +115,5 @@ export default function PlanchetteKeyboard({ onKeyPress }: PlanchetteKeyboardPro
     </div>
   );
 }
+
+    

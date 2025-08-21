@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -19,7 +20,7 @@ export function LoginForm() {
 
     // Mock authentication
     setTimeout(() => {
-      if (email === 'admin@dubai.bits-pilani.ac.in') {
+      if (email === 'acm@dubai.bits-pilani.ac.in') {
         // Mock admin login
         localStorage.setItem('user', JSON.stringify({ email, isAdmin: true }));
         router.push('/admin');
@@ -62,3 +63,5 @@ export function LoginForm() {
     </form>
   );
 }
+
+    
