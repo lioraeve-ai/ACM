@@ -54,7 +54,7 @@ const noviceConditions: Rule[] = [
 ];
 
 const cyberWarlockConditions: Rule[] = [
-    { description: "Password must be exactly 14 characters long", test: (input) => input.length === 14 },
+    { description: "Password must be at least 14 characters long", test: (input) => input.length >= 14 },
     { description: "Must start with 'ACM' and contain '2025' somewhere within", test: (input) => input.startsWith('ACM') && input.includes('2025') },
     { description: "Must include current moon phase number (1-8)", test: (input) => {
         // Simplified moon phase calculation
@@ -68,7 +68,7 @@ const cyberWarlockConditions: Rule[] = [
         );
     }},
     { description: "Cannot use sequential keyboard patterns (qwe,asd,zxc,123,abc)", test: (input) => !sequentialPatterns.some(p => input.toLowerCase().includes(p)) },
-    { description: "Must include exactly 3 hexadecimal digits (A-F)", test: (input) => (input.match(/[A-F]/g) || []).length === 3 },
+    { description: "Must include exactly 3 hexadecimal digits (A-F)", test: (input) => (input.match(/[A-Fa-f]/g) || []).length === 3 },
     { description: "Must contain programming language abbreviation (JS,PY,CPP,SQL,GO,RUST)", test: (input) => /(JS|PY|CPP|SQL|GO|RUST)/.test(input) },
     { description: "Must include Boolean operator (AND,OR,NOT,XOR) in all caps", test: (input) => /(AND|OR|NOT|XOR)/.test(input) },
     { description: "Must contain current hour in 24-hour format", test: (input) => input.includes(new Date().getHours().toString().padStart(2, '0')) },
@@ -223,4 +223,3 @@ export async function validatePassword(password: string, rules: Rule[]): Promise
     );
     return results;
 }
-
