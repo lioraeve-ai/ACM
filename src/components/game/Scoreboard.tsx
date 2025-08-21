@@ -1,13 +1,14 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
-export default function Scoreboard() {
-  const scoreData = {
-    score: 1337,
-    time: "120.5s",
-    streak: 5,
-    multiplier: "x2.5",
-  };
+interface ScoreboardProps {
+  score: number;
+  time: number;
+  streak: number;
+  multiplier: number;
+}
 
+export default function Scoreboard({ score, time, streak, multiplier }: ScoreboardProps) {
   return (
     <Card className="bg-card/50 border-border text-center">
       <CardHeader>
@@ -16,19 +17,19 @@ export default function Scoreboard() {
       <CardContent className="font-roboto-mono text-lg space-y-4">
         <div className="flex justify-between items-baseline">
           <span className="text-muted-foreground">SCORE:</span>
-          <span className="text-2xl font-bold text-accent">{scoreData.score}</span>
+          <span className="text-2xl font-bold text-accent">{score.toLocaleString()}</span>
         </div>
         <div className="flex justify-between">
           <span className="text-muted-foreground">TIME:</span>
-          <span>{scoreData.time}</span>
+          <span>{time.toFixed(1)}s</span>
         </div>
         <div className="flex justify-between">
           <span className="text-muted-foreground">STREAK:</span>
-          <span className="text-achievement-green">{scoreData.streak}</span>
+          <span className="text-achievement-green">{streak}</span>
         </div>
         <div className="flex justify-between">
           <span className="text-muted-foreground">MULTIPLIER:</span>
-          <span className="text-challenge-orange">{scoreData.multiplier}</span>
+          <span className="text-challenge-orange">x{multiplier.toFixed(1)}</span>
         </div>
       </CardContent>
     </Card>
